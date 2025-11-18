@@ -9,5 +9,6 @@ dependencies = [
     "ipykernel>=7.1.0",
     "pandas>=2.3.3",
     "pyarrow>=22.0.0",
+    "scikit-learn>=1.7.2",
     "sodapy>=2.2.0",
 ]
