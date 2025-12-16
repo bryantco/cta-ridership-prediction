@@ -4,10 +4,10 @@ class Regressor(nn.Module):
     def __init__(self, n_in):
         super().__init__()
         self.net = nn.Sequential(
-            nn.Linear(n_in, 8),
+            nn.Linear(n_in, 32),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(8, 1)
+            nn.Linear(32, 1)
         )
 
     def forward(self, x):
