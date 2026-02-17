@@ -8,6 +8,7 @@ dependencies = [
     "fastparquet>=2024.11.0",
     "ipykernel>=7.1.0",
     "nbformat>=5.10.4",
+    "optuna>=4.7.0",
     "pandas>=2.3.3",
     "plotly>=6.5.0",
     "pyarrow>=22.0.0",
