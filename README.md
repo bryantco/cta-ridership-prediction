@@ -31,7 +31,7 @@ The order to run the notebooks is as follows:
 
 ---
 
-## Results(#results)
+## Results
 
 The below table summarizes the R-squared from each model that I trained. A random forest (without any hyperparameter tuning) performed the best.
 
