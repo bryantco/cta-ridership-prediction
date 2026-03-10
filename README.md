@@ -43,7 +43,7 @@ The below table summarizes the R-squared from each model that I trained. A rando
 | Neural network (PyTorch, 2-layer MLP) | 0.378 |
 | LightGBM | 0.885 |
 | XGBoost | 0.938 |
-| Tuned XGBoost (Optuna, 20 trials) | 0.941 |
-| Tuned LightGBM (Optuna, 10 trials) | 0.914 |
+| Tuned XGBoost (Optuna, 20 trials) | 0.947 |
+| Tuned LightGBM (Optuna, 10 trials) | 0.911 |
 | **Random Forest** | **0.968** |
 
