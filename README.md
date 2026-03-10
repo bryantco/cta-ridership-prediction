@@ -1,8 +1,26 @@
 # CTA Ridership Prediction
 
-A machine-learning pipeline that predicts daily ridership at Chicago Transit Authority (CTA) 'L' train stations using publicly available data from the City of Chicago's open data portal.
+This repo contains a machine learning project that attempts to predict daily ridership of Chicago Transit Authority (CTA) 'L' train stations using publicly available data from the City of Chicago's open data portal. I found that a simple out-of-the-box random forest model performed the best (R-squared = 0.968). See the [results](#results) section for more details.
 
 ---
+
+## Setup
+
+This project uses [uv](https://docs.astral.sh/uv/) for dependency management. Once `uv` is installed on your machine, run the following to run the code in each notebook:
+
+```bash
+# Install dependencies
+uv sync
+
+# Launch Jupyter to run notebooks
+uv run jupyter notebook
+```
+
+The order to run the notebooks is as follows:
+
+1. `extract_ridership_data/extract_ridership_data.ipynb`
+2. `feature_engineer/feature_engineer.ipynb`
+3. `predict_ridership/predict_ridership.ipynb`
 
 ## Data sources
 
@@ -13,15 +31,7 @@ A machine-learning pipeline that predicts daily ridership at Chicago Transit Aut
 
 ---
 
-## Pipeline
-
-```
-extract_ridership_data/   ← downloads & caches raw data from Socrata
-feature_engineer/         ← joins station metadata, engineers date & line features
-predict_ridership/        ← trains and evaluates machine learning models
-```
-
-## Results
+## Results(#results)
 
 The below table summarizes the R-squared from each model that I trained. A random forest (without any hyperparameter tuning) performed the best.
 
@@ -37,22 +47,3 @@ The below table summarizes the R-squared from each model that I trained. A rando
 | Tuned LightGBM (Optuna, 10 trials) | 0.914 |
 | **Random Forest** | **0.968** |
 
----
-
-## Setup
-
-This project uses [uv](https://docs.astral.sh/uv/) for dependency management.
-
-```bash
-# Install dependencies
-uv sync
-
-# Launch Jupyter to run notebooks
-uv run jupyter notebook
-```
-
-Run the notebooks **in order**:
-
-1. `extract_ridership_data/extract_ridership_data.ipynb`
-2. `feature_engineer/feature_engineer.ipynb`
-3. `predict_ridership/predict_ridership.ipynb`
