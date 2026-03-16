@@ -24,6 +24,7 @@
 **.gph
 **.tex
 **.out
+**.joblib
 
 .Rproj.user
 .Rhistory
