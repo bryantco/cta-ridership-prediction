@@ -22,7 +22,7 @@ The below table summarizes the R-squared from each model that I trained. A rando
 
 Below, I created a hexbin plot of predicted values against actual values for ridership on the test set. The density is highly clustered around the y = x line, consistent with the high R-squared.
 
-![Actual versus Predicted Ridership](evaluate/output/actual_vs_predicted_ridership.png)
+![Actual versus Predicted Ridership](_assets/actual_vs_predicted_ridership.png)
 
 I am quite surprised at the high accuracy, but do not think I am overfitting, as there is no leakage between the train and test sets.
 
