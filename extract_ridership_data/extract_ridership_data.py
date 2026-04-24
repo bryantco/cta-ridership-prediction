@@ -2,19 +2,27 @@ import os
 from pathlib import Path
 import requests
 import pandas as pd
+import argparse
 
 from utils import fetch_socrata_dataset
 
+# parse args
+parser = argparse.ArgumentParser()
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--cta_ridership", type=str, required=True)
+parser.add_argument("--cta_stations", type=str, required=True)
+args = parser.parse_args()
+
 # If the CTA ridership data exists, read it in
-if Path("output/cta_ridership.parquet").is_file():
-    cta_df = pd.read_parquet("output/cta_ridership.parquet")
+if Path(args.cta_ridership).is_file():
+    cta_df = pd.read_parquet(args.cta_ridership)
 else:
     # If the CTA data does not exist, download it from Socrata
     cta_df = fetch_socrata_dataset('5neh-572f')
 
     # And save as a flat file
-    os.makedirs("output", exist_ok=True)
-    cta_df.to_parquet(path='output/cta_ridership.parquet', engine='fastparquet', index=False)
+    os.makedirs(args.output_dir, exist_ok=True)
+    cta_df.to_parquet(path=args.cta_ridership, engine='fastparquet', index=False)
 
 cta_df.tail(10)
 
@@ -45,15 +53,15 @@ else:
     cta_df = pd.concat([cta_df, df_new], ignore_index=True)
 
     # Save the flat file
-    os.makedirs("output", exist_ok=True)
-    cta_df.to_parquet(path='output/cta_ridership.parquet', engine='fastparquet', index=False)
+    os.makedirs(args.output_dir, exist_ok=True)
+    cta_df.to_parquet(path=args.cta_ridership, engine='fastparquet', index=False)
 
 
-if Path("output/cta_stations.parquet").is_file():
-    cta_stations_df = pd.read_parquet("output/cta_stations.parquet")
+if Path(args.cta_stations).is_file():
+    cta_stations_df = pd.read_parquet(args.cta_stations)
 else:
     cta_stations_df = fetch_socrata_dataset('8pix-ypme')
 
     # And save as a flat file
-    os.makedirs("output", exist_ok=True)
-    cta_stations_df.to_parquet(path='output/cta_stations.parquet', engine='fastparquet', index=False)
+    os.makedirs(args.output_dir, exist_ok=True)
+    cta_stations_df.to_parquet(path=args.cta_stations, engine='fastparquet', index=False)
