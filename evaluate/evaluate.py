@@ -1,10 +1,19 @@
+import argparse
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from joblib import load
 
-test_df = pd.read_parquet("../predict_ridership/output/cta_ridership_test.parquet")
-mod_rf = load("../predict_ridership/output/mod_rf.joblib")
+# parse args
+parser = argparse.ArgumentParser()
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--cta_ridership_test", type=str, required=True)
+parser.add_argument("--mod_rf", type=str, required=True)
+parser.add_argument("--actual_vs_predicted_ridership", type=str, required=True)
+args = parser.parse_args()
+
+test_df = pd.read_parquet(args.cta_ridership_test)
+mod_rf = load(args.mod_rf)
 
 y_test = test_df["rides"]
 X_test = test_df.drop(columns=["rides"]).values
@@ -21,5 +30,5 @@ ax.set_title("Actual vs. Predicted Ridership (Test Set)")
 
 plt.tight_layout()
 # need to save before show
-plt.savefig('../_assets/actual_vs_predicted_ridership.png')
+plt.savefig(args.actual_vs_predicted_ridership)
 plt.show()

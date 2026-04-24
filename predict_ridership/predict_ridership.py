@@ -1,3 +1,6 @@
+import argparse
+import importlib
+from pathlib import Path
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, StandardScaler
@@ -12,7 +15,6 @@ import optuna
 import xgboost as xgb
 import lightgbm as lgb
 
-from model import Regressor
 from utils import xgb_objective, lgb_objective
 import torch
 import torch.nn as nn
@@ -22,7 +24,20 @@ from tqdm import tqdm
 
 from joblib import dump
 
-cta_df = pd.read_parquet('../feature_engineer/output/cta_ridership_with_features.parquet')
+# parse args
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", type=str, required=True)
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--cta_ridership_with_features", type=str, required=True)
+parser.add_argument("--cta_ridership_test", type=str, required=True)
+parser.add_argument("--mod_rf", type=str, required=True)
+args = parser.parse_args()
+
+model_arg = Path(args.model).stem
+model = importlib.import_module(model_arg)
+Regressor = getattr(model, "Regressor")
+
+cta_df = pd.read_parquet(args.cta_ridership_with_features)
 cta_df = cta_df.reset_index(drop=True)
 
 cta_df.head(10)
@@ -53,7 +68,7 @@ X_test_dense = X_test.toarray() if sp.issparse(X_test) else X_test
 test_df = pd.DataFrame(X_test_dense, columns=feature_names)
 test_df["rides"] = y_test.values
 
-test_df.to_parquet("output/cta_ridership_test.parquet", index=False)
+test_df.to_parquet(args.cta_ridership_test, index=False)
 
 test_df.size
 
@@ -166,4 +181,4 @@ mod_lgb_tuned.fit(X_train, y_train)
 y_pred_lgb_tuned = mod_lgb_tuned.predict(X_test)
 print("R squared: ", r2_score(y_test, y_pred_lgb_tuned))
 
-dump(mod_rf, 'output/mod_rf.joblib')
+dump(mod_rf, args.mod_rf)

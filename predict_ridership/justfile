@@ -1,0 +1,26 @@
+CURRENT_DIR := replace(justfile_directory(), "\\", "/")
+output_dir := CURRENT_DIR / "output_test"
+
+# Inputs
+model := CURRENT_DIR / "model.py"
+code_predict_ridership := CURRENT_DIR / "predict_ridership.py"
+cta_ridership_with_features := CURRENT_DIR / ".." / "feature_engineer" / "output" / "cta_ridership_with_features.parquet"
+
+# Outputs
+cta_ridership_test := output_dir / "cta_ridership_test.parquet"
+mod_rf := output_dir / "mod_rf.joblib"
+
+all: mod_rf
+
+mod_rf:
+	echo "Running prediction model..."
+	mkdir "{{output_dir}}"
+	uv run --project cta_ridership_prediction python "{{code_predict_ridership}}" \
+		--model {{model}} \
+		--output_dir {{output_dir}} \
+		--cta_ridership_with_features {{cta_ridership_with_features}} \
+		--cta_ridership_test {{cta_ridership_test}} \
+		--mod_rf {{mod_rf}}
+		
+clean:
+	rm -rf "{{output_dir}}"

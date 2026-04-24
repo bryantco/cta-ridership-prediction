@@ -1,12 +1,21 @@
 import pandas as pd
 import numpy as np
 import json
+import argparse
 
-cta_df = pd.read_parquet('../extract_ridership_data/output/cta_ridership.parquet')
+# parse args
+parser = argparse.ArgumentParser()
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--cta_ridership", type=str, required=True)
+parser.add_argument("--cta_stations", type=str, required=True)
+parser.add_argument("--cta_ridership_with_features", type=str, required=True)
+args = parser.parse_args()
+
+cta_df = pd.read_parquet(args.cta_ridership)
 
 cta_df.head(10)
 
-cta_stations_df = pd.read_parquet('../extract_ridership_data/output/cta_stations.parquet')
+cta_stations_df = pd.read_parquet(args.cta_stations)
 
 cta_stations_df.head(10)
 
@@ -82,4 +91,4 @@ cta_df.head(10)
 
 cta_df.tail(10)
 
-cta_df.to_parquet('output/cta_ridership_with_features.parquet', engine='fastparquet', index=False)
+cta_df.to_parquet(args.cta_ridership_with_features, engine='fastparquet', index=False)
