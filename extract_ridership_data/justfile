@@ -1,5 +1,5 @@
-CURRENT_DIR := justfile_directory()
-output_dir := CURRENT_DIR / "output"
+CURRENT_DIR := replace(justfile_directory(), "\\", "/")
+output_dir := CURRENT_DIR / "output_test"
 
 # Inputs
 code_extract_ridership_data := CURRENT_DIR / "extract_ridership_data.py"
