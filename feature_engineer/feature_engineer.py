@@ -12,12 +12,7 @@ parser.add_argument("--cta_ridership_with_features", type=str, required=True)
 args = parser.parse_args()
 
 cta_df = pd.read_parquet(args.cta_ridership)
-
-cta_df.head(10)
-
 cta_stations_df = pd.read_parquet(args.cta_stations)
-
-cta_stations_df.head(10)
 
 stop_id_unique = set(cta_stations_df["map_id"])
 
@@ -73,23 +68,12 @@ choices_cta_line = [
 
 cta_df["line"] = np.select(conditions_cta_line, choices_cta_line, default="NA")
 
-cta_df.head(10)
-
-cta_df["line"].value_counts()
-
 cta_df["date"] = pd.to_datetime(cta_df["date"])
-
 cta_df["year"] = cta_df["date"].dt.year
 cta_df["month"] = cta_df["date"].dt.month
 cta_df["day"] = cta_df["date"].dt.day
 
 cta_df["day_of_week_num"] = cta_df["date"].dt.weekday
 cta_df["day_of_week_name"] = cta_df["date"].dt.day_name()
-
-cta_df.head(10)
-
-cta_df.head(10)
-
-cta_df.tail(10)
 
 cta_df.to_parquet(args.cta_ridership_with_features, engine="fastparquet", index=False)

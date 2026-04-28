@@ -24,8 +24,6 @@ else:
     os.makedirs(args.output_dir, exist_ok=True)
     cta_df.to_parquet(path=args.cta_ridership, engine="fastparquet", index=False)
 
-cta_df.tail(10)
-
 # Check that the file is up-to-date
 # If the data exists and the last row number is smaller than the last row number on Socrata, re-download
 nrow_in_data = cta_df.shape[0]

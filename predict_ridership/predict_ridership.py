@@ -3,6 +3,7 @@ import importlib
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import scipy.sparse as sp
 from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder, StandardScaler
 from sklearn.compose import (
     make_column_transformer,
@@ -44,12 +45,11 @@ Regressor = getattr(model, "Regressor")
 cta_df = pd.read_parquet(args.cta_ridership_with_features)
 cta_df = cta_df.reset_index(drop=True)
 
-cta_df.head(10)
-
 ordinal_encoder = OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
 onehot_encoder = OneHotEncoder()
 scaler = StandardScaler()
 
+# Preprocess ----
 preprocessor = make_column_transformer(
     # (ordinal_encoder, make_column_selector(dtype_include=object)),
     (onehot_encoder, make_column_selector(dtype_include=object)),
@@ -73,13 +73,12 @@ X = preprocessor.fit_transform(
 )
 y = cta_df["rides"]
 
+# Train-test split ----
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.33, random_state=42
 )
 y_train = y_train.astype(float)
 y_test = y_test.astype(float)
-
-import scipy.sparse as sp
 
 feature_names = preprocessor.get_feature_names_out()
 X_test_dense = X_test.toarray() if sp.issparse(X_test) else X_test
@@ -89,8 +88,7 @@ test_df["rides"] = y_test.values
 
 test_df.to_parquet(args.cta_ridership_test, index=False)
 
-test_df.size
-
+# OLS ----
 mod_ols = TransformedTargetRegressor(
     regressor=LinearRegression(), func=np.log1p, inverse_func=np.expm1
 )
@@ -99,6 +97,7 @@ mod_ols.fit(X_train, y_train)
 y_pred_ols = mod_ols.predict(X_test)
 print("R squared: ", r2_score(y_test, y_pred_ols))
 
+# RF ----
 mod_rf = TransformedTargetRegressor(
     regressor=RandomForestRegressor(n_estimators=10, random_state=42),
     func=np.log1p,
@@ -109,6 +108,7 @@ mod_rf.fit(X_train, y_train)
 y_pred_rf = mod_rf.predict(X_test)
 print("R squared: ", r2_score(y_test, y_pred_rf))
 
+# XGB ----
 mod_xgb = TransformedTargetRegressor(
     regressor=xgb.XGBRegressor(random_state=42, tree_method="hist"),
     func=np.log1p,
@@ -119,9 +119,9 @@ mod_xgb.fit(X_train, y_train)
 y_pred_xgb = mod_xgb.predict(X_test)
 print("R squared: ", r2_score(y_test, y_pred_xgb))
 
+# Neural network ----
 torch.manual_seed(42)
 
-# Preprocess ----
 # Log transform
 y_train_log = np.log1p(y_train).values.reshape(-1, 1)
 y_test_log = np.log1p(y_test).values.reshape(-1, 1)
@@ -154,6 +154,7 @@ with torch.no_grad():
     r2_nn = r2_score(y_test, y_pred)
     print("R squared: ", r2_nn)
 
+# LightGBM ----
 mod_lgb = TransformedTargetRegressor(
     regressor=lgb.LGBMRegressor(random_state=42), func=np.log1p, inverse_func=np.expm1
 )
