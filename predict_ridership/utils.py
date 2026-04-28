@@ -52,7 +52,10 @@ def xgb_objective(trial, x: np.ndarray, y: np.ndarray) -> float:
 
     model = xgb.XGBRegressor(**params)
     cv_results = cross_validate(
-        model, x, y, cv=3,
+        model,
+        x,
+        y,
+        cv=3,
         scoring={"r2_inverse": make_scorer(r2_scorer_inverse)},
     )
     return cv_results["test_r2_inverse"].mean()
@@ -83,7 +86,10 @@ def lgb_objective(trial, x: np.ndarray, y: np.ndarray) -> float:
 
     model = lgb.LGBMRegressor(**params)
     cv_results = cross_validate(
-        model, x, y, cv=3,
+        model,
+        x,
+        y,
+        cv=3,
         scoring={"r2_inverse": make_scorer(r2_scorer_inverse)},
     )
     return cv_results["test_r2_inverse"].mean()
