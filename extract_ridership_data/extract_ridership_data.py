@@ -18,35 +18,29 @@ if Path(args.cta_ridership).is_file():
     cta_df = pd.read_parquet(args.cta_ridership)
 else:
     # If the CTA data does not exist, download it from Socrata
-    cta_df = fetch_socrata_dataset('5neh-572f')
+    cta_df = fetch_socrata_dataset("5neh-572f")
 
     # And save as a flat file
     os.makedirs(args.output_dir, exist_ok=True)
-    cta_df.to_parquet(path=args.cta_ridership, engine='fastparquet', index=False)
-
-cta_df.tail(10)
+    cta_df.to_parquet(path=args.cta_ridership, engine="fastparquet", index=False)
 
 # Check that the file is up-to-date
 # If the data exists and the last row number is smaller than the last row number on Socrata, re-download
 nrow_in_data = cta_df.shape[0]
-print(f'Number of rows in the data: {nrow_in_data}')
+print(f"Number of rows in the data: {nrow_in_data}")
 
 # Check against Socrata
 url = "https://data.cityofchicago.org/resource/5neh-572f.json"
-params = {
-    "$select": "count(*)"
-}
+params = {"$select": "count(*)"}
 
 data_socrata_json = requests.get(url, params=params).json()
-nrow_in_socrata = int(data_socrata_json[0]['count'])
+nrow_in_socrata = int(data_socrata_json[0]["count"])
 
 if nrow_in_data == nrow_in_socrata:
-    print('The local data is up-to-date.')
+    print("The local data is up-to-date.")
 else:
-    print('Downloading new data...')
-    params_download = {
-        "$offset": nrow_in_data
-    }
+    print("Downloading new data...")
+    params_download = {"$offset": nrow_in_data}
 
     data_new = requests.get(url, params=params_download).json()
     df_new = pd.DataFrame(data_new)
@@ -54,14 +48,16 @@ else:
 
     # Save the flat file
     os.makedirs(args.output_dir, exist_ok=True)
-    cta_df.to_parquet(path=args.cta_ridership, engine='fastparquet', index=False)
+    cta_df.to_parquet(path=args.cta_ridership, engine="fastparquet", index=False)
 
 
 if Path(args.cta_stations).is_file():
     cta_stations_df = pd.read_parquet(args.cta_stations)
 else:
-    cta_stations_df = fetch_socrata_dataset('8pix-ypme')
+    cta_stations_df = fetch_socrata_dataset("8pix-ypme")
 
     # And save as a flat file
     os.makedirs(args.output_dir, exist_ok=True)
-    cta_stations_df.to_parquet(path=args.cta_stations, engine='fastparquet', index=False)
+    cta_stations_df.to_parquet(
+        path=args.cta_stations, engine="fastparquet", index=False
+    )
