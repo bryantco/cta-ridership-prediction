@@ -4,6 +4,28 @@ This repo contains a machine learning project that attempts to predict daily rid
 
 ---
 
+## Results
+
+The below table summarizes the R-squared from each model that I trained. A random forest (without any hyperparameter tuning) performed the best.
+
+**Models evaluated**
+
+| Model | Test R² |
+|-------|---------|
+| OLS (linear regression) | 0.131 |
+| Neural network (PyTorch, 2-layer MLP) | 0.378 |
+| LightGBM | 0.885 |
+| XGBoost | 0.938 |
+| Tuned XGBoost (Optuna, 20 trials) | 0.947 |
+| Tuned LightGBM (Optuna, 10 trials) | 0.911 |
+| **Random Forest** | **0.968** |
+
+Below, I created a hexbin plot of predicted values against actual values for ridership on the test set. The density is highly clustered around the y = x line, consistent with the high R-squared.
+
+![Actual versus Predicted Ridership](_assets/actual_vs_predicted_ridership.png)
+
+I am quite surprised at the high accuracy, but do not think I am overfitting, as there is no leakage between the train and test sets.
+
 ## Setup
 
 This project uses [uv](https://docs.astral.sh/uv/) for dependency management. Once `uv` is installed on your machine, run the following to run the code in each notebook:
@@ -30,20 +52,4 @@ The order to run the notebooks is as follows:
 | CTA - System Information - List of 'L' Stops | `8pix-ypme` | Station metadata including line, location, and coordinates |
 
 ---
-
-## Results
-
-The below table summarizes the R-squared from each model that I trained. A random forest (without any hyperparameter tuning) performed the best.
-
-**Models evaluated**
-
-| Model | Test R² |
-|-------|---------|
-| OLS (linear regression) | 0.131 |
-| Neural network (PyTorch, 2-layer MLP) | 0.378 |
-| LightGBM | 0.885 |
-| XGBoost | 0.938 |
-| Tuned XGBoost (Optuna, 20 trials) | 0.947 |
-| Tuned LightGBM (Optuna, 10 trials) | 0.911 |
-| **Random Forest** | **0.968** |
 

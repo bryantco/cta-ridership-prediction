@@ -1,0 +1,19 @@
+CURRENT_DIR := replace(justfile_directory(), "\\", "/")
+output_dir := CURRENT_DIR / "output_test"
+
+# Inputs
+code_extract_ridership_data := CURRENT_DIR / "extract_ridership_data.py"
+
+# Outputs
+cta_ridership := output_dir / "cta_ridership.parquet"
+cta_stations := output_dir / "cta_stations.parquet"
+
+all: cta_stations
+
+cta_stations:
+	echo "Extracting CTA ridership and station data..."
+	mkdir "{{output_dir}}"
+	uv run --project cta_ridership_prediction python "{{code_extract_ridership_data}}" --output_dir {{output_dir}} --cta_ridership {{cta_ridership}} --cta_stations {{cta_stations}}
+		
+clean:
+	rm -rf "{{output_dir}}"

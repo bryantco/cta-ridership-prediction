@@ -1,0 +1,25 @@
+CURRENT_DIR := replace(justfile_directory(), "\\", "/")
+output_dir := CURRENT_DIR / "output_test"
+
+# Inputs
+code_feature_engineer := CURRENT_DIR / "feature_engineer.py"
+cta_ridership := CURRENT_DIR / ".." / "extract_ridership_data" / "output" / "cta_ridership.parquet"
+cta_stations := CURRENT_DIR / ".." / "extract_ridership_data" / "output" / "cta_stations.parquet"
+
+# Outputs
+cta_ridership_with_features := output_dir / "cta_ridership_with_features.parquet"
+
+all: cta_ridership_with_features
+
+cta_ridership_with_features:
+	echo "Feature engineering..."
+	mkdir "{{output_dir}}"
+	uv run --project cta_ridership_prediction python "{{code_feature_engineer}}" \
+		--output_dir {{output_dir}} \
+		--cta_ridership {{cta_ridership}} \
+		--cta_stations {{cta_stations}} \
+		--cta_ridership_with_features {{cta_ridership_with_features}}
+		
+		
+clean:
+	rm -rf "{{output_dir}}"
